@@ -70,11 +70,7 @@ bool Grid::TestLeft() const
     {
         for (int col=0; col<size-1; ++col)
         {
-            if (tile[row][col] == 0)
-            {
-                continue;
-            }
-            else if (tile[row][col] == tile[row][col+1])
+            if (tile[row][col] == tile[row][col+1])
             {
                 return true;
             }
@@ -154,11 +150,7 @@ bool Grid::TestRight() const
     {
         for (int col=size-1; col>0; --col)
         {
-            if (tile[row][col] == 0)
-            {
-                continue;
-            }
-            else if (tile[row][col] == tile[row][col-1])
+            if (tile[row][col] == tile[row][col-1])
             {
                 return true;
             }
@@ -238,11 +230,7 @@ bool Grid::TestDown() const
     {
         for (int row=size-1; row>0; --row)
         {
-            if (tile[row][col] == 0)
-            {
-                continue;
-            }
-            else if (tile[row][col] == tile[row-1][col])
+            if (tile[row][col] == tile[row-1][col])
             {
                 return true;
             }
@@ -322,11 +310,7 @@ bool Grid::TestUp() const
     {
         for (int row=0; row<size-1; ++row)
         {
-            if (tile[row][col] == 0)
-            {
-                continue;
-            }
-            else if (tile[row][col] == tile[row+1][col])
+            if (tile[row][col] == tile[row+1][col])
             {
                 return true;
             }
