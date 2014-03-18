@@ -62,9 +62,15 @@ void Grid::Start()
 
 bool Grid::TestLeft() const
 {
-    if (numEmpty > 0)
+    for (int row=0; row<size; ++row)
     {
-        return true;
+        for (int col=1; col<size; ++col)
+        {
+            if ((tile[row][col] !=0) && (tile[row][col-1] == 0))
+            {
+                return true;
+            }
+        }
     }
     for (int row=0; row<size; ++row)
     {
@@ -142,9 +148,15 @@ void Grid::Left()
 
 bool Grid::TestRight() const
 {
-    if (numEmpty > 0)
+    for (int row=0; row<size; ++row)
     {
-        return true;
+        for (int col=size-2; col>-1; --col)
+        {
+            if ((tile[row][col] !=0) && (tile[row][col+1] == 0))
+            {
+                return true;
+            }
+        }
     }
     for (int row=0; row<size; ++row)
     {
@@ -222,9 +234,15 @@ void Grid::Right()
 
 bool Grid::TestDown() const
 {
-    if (numEmpty > 0)
+    for (int col=0; col<size; ++col)
     {
-        return true;
+        for (int row=size-2; row>-1; --row)
+        {
+            if ((tile[row][col] != 0) && (tile[row+1][col] == 0))
+            {
+                return true;
+            }
+        }
     }
     for (int col=0; col<size; ++col)
     {
@@ -302,9 +320,15 @@ void Grid::Down()
 
 bool Grid::TestUp() const
 {
-    if (numEmpty > 0)
+    for (int col=0; col<size; ++col)
     {
-        return true;
+        for (int row=1; row<size; ++row)
+        {
+            if ((tile[row][col] != 0) && (tile[row-1][col] == 0))
+            {
+                return true;
+            }
+        }
     }
     for (int col=0; col<size; ++col)
     {
