@@ -1,8 +1,7 @@
 project(2048 CXX)
 
-set(CMAKE_CXX_COMPILER clang++)
-set(CMAKE_CXX_FLAGS "-Wall -Werror")
-set(CMAKE_CXX_FLAGS_DEBUG "-ggdb")
+set(CMAKE_CXX_FLAGS "-Wall -Werror -std=c++1y")
+set(CMAKE_CXX_FLAGS_DEBUG "-ggdb -fsanitize=address")
 
 add_executable(${PROJECT_NAME} main.cpp grid.cpp)
 

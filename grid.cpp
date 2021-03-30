@@ -3,14 +3,15 @@
 #include <ncurses.h>
 #include <cstdlib>
 #include <ctime>
+#include <string>
 
-Grid::Grid(int s) : size(s), numEmpty(size*size), greatestNum(0), numGoal(512*size), numTries(0)
+Grid::Grid(int s) : _size(s), _numEmpty(_size*_size), _greatestNum(0), _numGoal(512*_size), _numTries(0)
 {
-    tile = new int* [size];
+    _tile = new int* [_size];
 
-    for(int row=0; row<size; ++row)
+    for(int row=0; row<_size; ++row)
     {
-        tile[row] = new int[size];
+        _tile[row] = new int[_size];
     }
 
     srand(time(NULL));
@@ -24,13 +25,13 @@ Grid::Grid(int s) : size(s), numEmpty(size*size), greatestNum(0), numGoal(512*si
 Grid::~Grid()
 {
     endwin();
-    for (int i=0; i<size; ++i)
+    for (int i=0; i<_size; ++i)
     {
-        delete [] tile[i];
-        tile[i] = 0;
+        delete [] _tile[i];
+        _tile[i] = 0;
     }
-    delete [] tile;
-    tile = 0;
+    delete [] _tile;
+    _tile = 0;
 }
 
 void Grid::Start()
@@ -62,25 +63,25 @@ void Grid::Start()
 
 bool Grid::TestLeft() const
 {
-    for (int row=0; row<size; ++row)
+    for (int row=0; row<_size; ++row)
     {
-        for (int col=1; col<size; ++col)
+        for (int col=1; col<_size; ++col)
         {
-            if ((tile[row][col] !=0) && (tile[row][col-1] == 0))
+            if ((_tile[row][col] !=0) && (_tile[row][col-1] == 0))
             {
                 return true;
             }
         }
     }
-    for (int row=0; row<size; ++row)
+    for (int row=0; row<_size; ++row)
     {
-        for (int col=0; col<size-1; ++col)
+        for (int col=0; col<_size-1; ++col)
         {
-            if (tile[row][col] == 0)
+            if (_tile[row][col] == 0)
             {
                 continue;
             }
-            if (tile[row][col] == tile[row][col+1])
+            if (_tile[row][col] == _tile[row][col+1])
             {
                 return true;
             }
@@ -97,37 +98,37 @@ void Grid::Left()
         return;
     }
 
-    for (int row=0; row<size; ++row)
+    for (int row=0; row<_size; ++row)
     {
         bool again = true;
         while (again)
         {
             again = false;
-            for (int col=1; col<size; ++col)
+            for (int col=1; col<_size; ++col)
             {
-                if ((tile[row][col] != 0) && (tile[row][col-1] == 0))
+                if ((_tile[row][col] != 0) && (_tile[row][col-1] == 0))
                 {
-                    tile[row][col-1] = tile[row][col];
-                    tile[row][col] = 0;
+                    _tile[row][col-1] = _tile[row][col];
+                    _tile[row][col] = 0;
                     again = true;
                 }
             }
         }
-        for (int col=0; col<size-1; ++col)
+        for (int col=0; col<_size-1; ++col)
         {
-            if (tile[row][col] == 0)
+            if (_tile[row][col] == 0)
             {
                 continue;
             }
-            else if (tile[row][col] == tile[row][col+1])
+            else if (_tile[row][col] == _tile[row][col+1])
             {
-                tile[row][col] *= 2;
-                if (tile[row][col] > greatestNum)
+                _tile[row][col] *= 2;
+                if (_tile[row][col] > _greatestNum)
                 {
-                    greatestNum = tile[row][col];
+                    _greatestNum = _tile[row][col];
                 }
-                tile[row][col+1] *= 0;
-                numEmpty++;
+                _tile[row][col+1] *= 0;
+                _numEmpty++;
                 ++col;
             }
         }
@@ -135,12 +136,12 @@ void Grid::Left()
         while(again)
         {
             again = false;
-            for (int col=1; col<size; ++col)
+            for (int col=1; col<_size; ++col)
             {
-                if ((tile[row][col] != 0) && (tile[row][col-1] == 0))
+                if ((_tile[row][col] != 0) && (_tile[row][col-1] == 0))
                 {
-                    tile[row][col-1] = tile[row][col];
-                    tile[row][col] = 0;
+                    _tile[row][col-1] = _tile[row][col];
+                    _tile[row][col] = 0;
                     again = true;
                 }
             }
@@ -152,25 +153,25 @@ void Grid::Left()
 
 bool Grid::TestRight() const
 {
-    for (int row=0; row<size; ++row)
+    for (int row=0; row<_size; ++row)
     {
-        for (int col=size-2; col>-1; --col)
+        for (int col=_size-2; col>-1; --col)
         {
-            if ((tile[row][col] !=0) && (tile[row][col+1] == 0))
+            if ((_tile[row][col] !=0) && (_tile[row][col+1] == 0))
             {
                 return true;
             }
         }
     }
-    for (int row=0; row<size; ++row)
+    for (int row=0; row<_size; ++row)
     {
-        for (int col=size-1; col>0; --col)
+        for (int col=_size-1; col>0; --col)
         {
-            if (tile[row][col] == 0)
+            if (_tile[row][col] == 0)
             {
                 continue;
             }
-            if (tile[row][col] == tile[row][col-1])
+            if (_tile[row][col] == _tile[row][col-1])
             {
                 return true;
             }
@@ -187,37 +188,37 @@ void Grid::Right()
         return;
     }
 
-    for (int row=0; row<size; ++row)
+    for (int row=0; row<_size; ++row)
     {
         bool again = true;
         while (again)
         {
             again = false;
-            for (int col=size-2; col>-1; --col)
+            for (int col=_size-2; col>-1; --col)
             {
-                if ((tile[row][col] != 0) && (tile[row][col+1] == 0))
+                if ((_tile[row][col] != 0) && (_tile[row][col+1] == 0))
                 {
-                    tile[row][col+1] = tile[row][col];
-                    tile[row][col] = 0;
+                    _tile[row][col+1] = _tile[row][col];
+                    _tile[row][col] = 0;
                     again = true;
                 }
             }
         }
-        for (int col=size-1; col>0; --col)
+        for (int col=_size-1; col>0; --col)
         {
-            if (tile[row][col] == 0)
+            if (_tile[row][col] == 0)
             {
                 continue;
             }
-            else if (tile[row][col] == tile[row][col-1])
+            else if (_tile[row][col] == _tile[row][col-1])
             {
-                tile[row][col] *= 2;
-                if (tile[row][col] > greatestNum)
+                _tile[row][col] *= 2;
+                if (_tile[row][col] > _greatestNum)
                 {
-                    greatestNum = tile[row][col];
+                    _greatestNum = _tile[row][col];
                 }
-                tile[row][col-1] *= 0;
-                numEmpty++;
+                _tile[row][col-1] *= 0;
+                _numEmpty++;
                 --col;
             }
         }
@@ -225,12 +226,12 @@ void Grid::Right()
         while (again)
         {
             again = false;
-            for (int col=size-2; col>-1; --col)
+            for (int col=_size-2; col>-1; --col)
             {
-                if ((tile[row][col] != 0) && (tile[row][col+1] == 0))
+                if ((_tile[row][col] != 0) && (_tile[row][col+1] == 0))
                 {
-                    tile[row][col+1] = tile[row][col];
-                    tile[row][col] = 0;
+                    _tile[row][col+1] = _tile[row][col];
+                    _tile[row][col] = 0;
                     again = true;
                 }
             }
@@ -242,25 +243,25 @@ void Grid::Right()
 
 bool Grid::TestDown() const
 {
-    for (int col=0; col<size; ++col)
+    for (int col=0; col<_size; ++col)
     {
-        for (int row=size-2; row>-1; --row)
+        for (int row=_size-2; row>-1; --row)
         {
-            if ((tile[row][col] != 0) && (tile[row+1][col] == 0))
+            if ((_tile[row][col] != 0) && (_tile[row+1][col] == 0))
             {
                 return true;
             }
         }
     }
-    for (int col=0; col<size; ++col)
+    for (int col=0; col<_size; ++col)
     {
-        for (int row=size-1; row>0; --row)
+        for (int row=_size-1; row>0; --row)
         {
-            if (tile[row][col] == 0)
+            if (_tile[row][col] == 0)
             {
                 continue;
             }
-            if (tile[row][col] == tile[row-1][col])
+            if (_tile[row][col] == _tile[row-1][col])
             {
                 return true;
             }
@@ -277,37 +278,37 @@ void Grid::Down()
         return;
     }
 
-    for (int col=0; col<size; ++col)
+    for (int col=0; col<_size; ++col)
     {
         bool again = true;
         while (again)
         {
             again = false;
-            for (int row=size-2; row>-1; --row)
+            for (int row=_size-2; row>-1; --row)
             {
-                if ((tile[row][col] != 0) && (tile[row+1][col] == 0))
+                if ((_tile[row][col] != 0) && (_tile[row+1][col] == 0))
                 {
-                    tile[row+1][col] = tile[row][col];
-                    tile[row][col] = 0;
+                    _tile[row+1][col] = _tile[row][col];
+                    _tile[row][col] = 0;
                     again = true;
                 }
             }
         }
-        for (int row=size-1; row>0; --row)
+        for (int row=_size-1; row>0; --row)
         {
-            if (tile[row][col] == 0)
+            if (_tile[row][col] == 0)
             {
                 continue;
             }
-            else if (tile[row][col] == tile[row-1][col])
+            else if (_tile[row][col] == _tile[row-1][col])
             {
-                tile[row][col] *= 2;
-                if (tile[row][col] > greatestNum)
+                _tile[row][col] *= 2;
+                if (_tile[row][col] > _greatestNum)
                 {
-                    greatestNum = tile[row][col];
+                    _greatestNum = _tile[row][col];
                 }
-                tile[row-1][col] *= 0;
-                numEmpty++;
+                _tile[row-1][col] *= 0;
+                _numEmpty++;
                 --row;
             }
         }
@@ -315,12 +316,12 @@ void Grid::Down()
         while (again)
         {
             again = false;
-            for (int row=size-2; row>-1; --row)
+            for (int row=_size-2; row>-1; --row)
             {
-                if ((tile[row][col] != 0) && (tile[row+1][col] == 0))
+                if ((_tile[row][col] != 0) && (_tile[row+1][col] == 0))
                 {
-                    tile[row+1][col] = tile[row][col];
-                    tile[row][col] = 0;
+                    _tile[row+1][col] = _tile[row][col];
+                    _tile[row][col] = 0;
                     again = true;
                 }
             }
@@ -332,25 +333,25 @@ void Grid::Down()
 
 bool Grid::TestUp() const
 {
-    for (int col=0; col<size; ++col)
+    for (int col=0; col<_size; ++col)
     {
-        for (int row=1; row<size; ++row)
+        for (int row=1; row<_size; ++row)
         {
-            if ((tile[row][col] != 0) && (tile[row-1][col] == 0))
+            if ((_tile[row][col] != 0) && (_tile[row-1][col] == 0))
             {
                 return true;
             }
         }
     }
-    for (int col=0; col<size; ++col)
+    for (int col=0; col<_size; ++col)
     {
-        for (int row=0; row<size-1; ++row)
+        for (int row=0; row<_size-1; ++row)
         {
-            if (tile[row][col] == 0)
+            if (_tile[row][col] == 0)
             {
                 continue;
             }
-            if (tile[row][col] == tile[row+1][col])
+            if (_tile[row][col] == _tile[row+1][col])
             {
                 return true;
             }
@@ -367,37 +368,37 @@ void Grid::Up()
         return;
     }
 
-    for (int col=0; col<size; ++col)
+    for (int col=0; col<_size; ++col)
     {
         bool again = true;
         while (again)
         {
             again = false;
-            for (int row=1; row<size; ++row)
+            for (int row=1; row<_size; ++row)
             {
-                if ((tile[row][col] != 0) && (tile[row-1][col] == 0))
+                if ((_tile[row][col] != 0) && (_tile[row-1][col] == 0))
                 {
-                    tile[row-1][col] = tile[row][col];
-                    tile[row][col] = 0;
+                    _tile[row-1][col] = _tile[row][col];
+                    _tile[row][col] = 0;
                     again = true;
                 }
             }
         }
-        for (int row=0; row<size-1; ++row)
+        for (int row=0; row<_size-1; ++row)
         {
-            if (tile[row][col] == 0)
+            if (_tile[row][col] == 0)
             {
                 continue;
             }
-            else if (tile[row][col] == tile[row+1][col])
+            else if (_tile[row][col] == _tile[row+1][col])
             {
-                tile[row][col] *= 2;
-                if (tile[row][col] > greatestNum)
+                _tile[row][col] *= 2;
+                if (_tile[row][col] > _greatestNum)
                 {
-                    greatestNum = tile[row][col];
+                    _greatestNum = _tile[row][col];
                 }
-                tile[row+1][col] *= 0;
-                numEmpty++;
+                _tile[row+1][col] *= 0;
+                _numEmpty++;
                 ++row;
             }
         }
@@ -405,12 +406,12 @@ void Grid::Up()
         while (again)
         {
             again = false;
-            for (int row=1; row<size; ++row)
+            for (int row=1; row<_size; ++row)
             {
-                if ((tile[row][col] != 0) && (tile[row-1][col] == 0))
+                if ((_tile[row][col] != 0) && (_tile[row-1][col] == 0))
                 {
-                    tile[row-1][col] = tile[row][col];
-                    tile[row][col] = 0;
+                    _tile[row-1][col] = _tile[row][col];
+                    _tile[row][col] = 0;
                     again = true;
                 }
             }
@@ -423,18 +424,18 @@ void Grid::Up()
 void Grid::Seed(bool check)
 {
     int newValue = 2 + 2 * (rand() % 2);
-    int position = rand() % numEmpty;
+    int position = rand() % _numEmpty;
 
-    for (int row=0; row<size; ++row)
+    for (int row=0; row<_size; ++row)
     {
-        for (int col=0; col<size; ++col)
+        for (int col=0; col<_size; ++col)
         {
-            if (tile[row][col] == 0)
+            if (_tile[row][col] == 0)
             {
                 if (position == 0)
                 {
-                    tile[row][col] = newValue;
-                    --numEmpty;
+                    _tile[row][col] = newValue;
+                    --_numEmpty;
                     Draw();
                     if (check)
                     {
@@ -451,16 +452,16 @@ void Grid::Seed(bool check)
 void Grid::Draw()
 {
     refresh();
-    int numDigits = getNumDigits(numGoal);
+    int numDigits = getNumDigits(_numGoal);
     move(0, 0);
     addch(ACS_ULCORNER);
-    for (int col=0; col<size; ++col)
+    for (int col=0; col<_size; ++col)
     {
         for (int digit=0; digit<numDigits; ++digit)
         {
             addch(ACS_HLINE);
         }
-        if (col == size-1)
+        if (col == _size-1)
         {
             addch(ACS_URCORNER);
         }
@@ -469,11 +470,11 @@ void Grid::Draw()
             addch(ACS_TTEE);
         }
     }
-    for (int row=0; row<size; ++row)
+    for (int row=0; row<_size; ++row)
     {
         move(row*2+1, 0);
         addch(ACS_VLINE);
-        for (int col=0; col<size; ++col)
+        for (int col=0; col<_size; ++col)
         {
             for (int digit=0; digit<numDigits; ++digit)
             {
@@ -481,17 +482,17 @@ void Grid::Draw()
             }
             addch(ACS_VLINE);
         }
-        if (row == size-1)
+        if (row == _size-1)
         {
             move(row*2+2, 0);
             addch(ACS_LLCORNER);
-            for (int col=0; col<size; ++col)
+            for (int col=0; col<_size; ++col)
             {
                 for (int digit=0; digit<numDigits; ++digit)
                 {
                     addch(ACS_HLINE);
                 }
-                if (col == size-1)
+                if (col == _size-1)
                 {
                     addch(ACS_LRCORNER);
                 }
@@ -505,13 +506,13 @@ void Grid::Draw()
         {
             move(row*2+2, 0);
             addch(ACS_LTEE);
-            for (int col=0; col<size; ++col)
+            for (int col=0; col<_size; ++col)
             {
                 for (int digit=0; digit<numDigits; ++digit)
                 {
                     addch(ACS_HLINE);
                 }
-                if (col == size-1)
+                if (col == _size-1)
                 {
                     addch(ACS_RTEE);
                 }
@@ -521,38 +522,33 @@ void Grid::Draw()
                 }
             }
         }
-        for (int col=0; col<size; ++col)
+        for (int col=0; col<_size; ++col)
         {
             move(row*2+1, col*5+1);
 
-            int digitsRemaining = numDigits - getNumDigits(tile[row][col]);
-            if (tile[row][col] != 0)
+            if (_tile[row][col] != 0)
             {
-                printw("%d", tile[row][col]);
-            }
-            for(int digit=0; digit<digitsRemaining; ++digit)
-            {
-                printw(" ");
+                printw("%d", _tile[row][col]);
             }
         }
     }
-    mvprintw(size*2+1,0, "Try #: %d", numTries);
-    mvprintw(size*2+2,0, "Press 'r' to restart.");
-    mvprintw(size*2+3,0, "Press 'q' to quit.");
+    mvprintw(_size*2+1,0, "Try #: %d", _numTries);
+    mvprintw(_size*2+2,0, "Press 'r' to restart.");
+    mvprintw(_size*2+3,0, "Press 'q' to quit.");
 }
 
 void Grid::Restart()
 {
-    ++numTries;
+    ++_numTries;
 
-    numEmpty = size*size;
-    greatestNum = 0;
+    _numEmpty = _size*_size;
+    _greatestNum = 0;
 
-    for(int row=0; row<size; ++row)
+    for(int row=0; row<_size; ++row)
     {
-        for(int col=0; col<size; ++col)
+        for(int col=0; col<_size; ++col)
         {
-            tile[row][col] = 0;
+            _tile[row][col] = 0;
         }
     }
 
@@ -568,13 +564,13 @@ bool Grid::Check()
         !TestUp() &&
         !TestDown())
     {
-        mvprintw(size*2+4,0, "Game over.");
+        mvprintw(_size*2+4,0, "Game over.");
         return false;
     }
 
-    if (greatestNum == numGoal)
+    if (_greatestNum == _numGoal)
     {
-        mvprintw(size*2+4,0, "You win.");
+        mvprintw(_size*2+4,0, "You win.");
         getch();
         endwin();
         exit(0);
@@ -583,13 +579,8 @@ bool Grid::Check()
     return true;
 }
 
-int Grid::getNumDigits(unsigned int x) const
+int Grid::getNumDigits(unsigned x) const
 {
-    int numDigits = 0;
-    while (x > 0)
-    {
-        x /= 10;
-        ++numDigits;
-    }
-    return numDigits;
+    std::string s = std::to_string(x);
+    return s.length();
 }

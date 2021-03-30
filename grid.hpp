@@ -1,5 +1,4 @@
-#ifndef GRID_HPP_123456789
-#define GRID_HPP_123456789
+#pragma once
 
 struct Grid
 {
@@ -22,14 +21,13 @@ struct Grid
     bool Check();
     void Start();
 
-    int getNumDigits(unsigned int x) const;
 private:
-    int size;
-    int numEmpty;
-    int greatestNum;
-    int numGoal;
-    unsigned long int numTries;
-    int** tile;
-};
+    int getNumDigits(unsigned x) const;
 
-#endif
+    int _size;
+    int _numEmpty;
+    int _greatestNum;
+    int _numGoal;
+    int _numTries;
+    int** _tile;
+};
